@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class mainAPI {
     private String linR="";
     private String api_key = "f5e523cdf9f852a409985ca6d22c4f1d";
-    private String api_sig = MD5.getMd5("839f284b8672339a30048e6817acadfe");
+    private String api_sig = "839f284b8672339a30048e6817acadfe";
     private String out;
     private ArrayList<String> outA;
     private String token, tokenB;
@@ -70,9 +70,9 @@ public class mainAPI {
 
     private String createSecret(String method) {
         String sec = "api_key" + api_key + "method" + method + "token" + tokenB + api_sig;
-        System.out.println(sec);
+        System.out.println("Non md5: " + sec);
         sec = MD5.getMd5(sec);
-        System.out.println(sec);
+        System.out.println("MD5: " + sec);
         return sec;
     }
 
