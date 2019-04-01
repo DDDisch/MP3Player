@@ -8,7 +8,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import last.fm.lastAPI;
+import FileCommunicator.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
 public class Main extends Application {
@@ -16,15 +22,36 @@ public class Main extends Application {
     private lastAPI api = new lastAPI();
     private Button moreInfo;
     private TextField author;
+    private FileCommunicator apiSettings;
+    private String tmpS="";
 
     @Override
     public void start(Stage primaryStage) {
+        try {
+            apiSettings = new FileCommunicator(new File("./res/settings/api.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         GridPane root = new GridPane();
         primaryStage.setTitle("Last.fm API");
         primaryStage.setScene(new Scene(root, 300, 275));
 
         moreInfo = new Button("More Information");
-        author = new TextField("U2");
+        if(apiSettings.readFile().contains("Author:")) {
+            String tmp = apiSettings.readFile();
+            ArrayList<String> tmpA= new ArrayList<>(Arrays.asList(tmp.split("(?<= )")));
+            tmpA.remove(0);
+
+            for(int i = 0; i<tmpA.size(); i++) {
+                tmpS += tmpA.get(i);
+            }
+
+            author = new TextField("" + tmpS);
+        }
+        else {
+            author = new TextField("U2");
+        }
 
         addToRoot(root, author);
         addToRoot(root, moreInfo);
@@ -39,6 +66,14 @@ public class Main extends Application {
         primaryStage.titleProperty().bind(author.textProperty());
 
         addListener();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                apiSettings.writeLine("Author: " + author.getText());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }));
     }
 
     private void addToRoot(GridPane root, Node Element) {

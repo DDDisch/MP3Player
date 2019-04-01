@@ -27,7 +27,9 @@ public class authorPopUp {
         stage.initStyle(StageStyle.UNDECORATED);
         GridPane root = new GridPane();
         ImageView iv = new ImageView();
-        iv.setImage(new Image(filterArray(4, "img")));
+        if(!filterArray(4,"img").isEmpty()) {
+            iv.setImage(new Image(filterArray(4, "img")));
+        }
 
         stage.setScene(new Scene(root, 400, 400));
         stage.show();
