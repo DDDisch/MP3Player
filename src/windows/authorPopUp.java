@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -35,7 +36,11 @@ public class authorPopUp {
         addItem(root, new Label(filterArray(0, "title")));
         addItem(root, iv);
 
-        stage.addEventFilter(KeyEvent.KEY_PRESSED, e-> stage.close());
+        stage.addEventFilter(KeyEvent.KEY_PRESSED, e-> {
+            if(e.getCode() == KeyCode.ESCAPE) {
+                stage.close();
+            }
+        });
     }
 
     private static void addItem(GridPane root, Node node) {

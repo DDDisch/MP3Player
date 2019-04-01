@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -25,16 +26,24 @@ public class Main extends Application {
         moreInfo = new Button("More Information");
         author = new TextField("U2");
 
-        GridPane.setConstraints(moreInfo, 0, 0);
-        GridPane.setConstraints(author, 0, 1);
-        root.getChildren().add(moreInfo);
-        root.getChildren().add(author);
+        addToRoot(root, author);
+        addToRoot(root, moreInfo);
+
+        //GridPane.setConstraints(moreInfo, 0, 0);
+        //GridPane.setConstraints(author, 0, 1);
+        //root.getChildren().add(moreInfo);
+        //root.getChildren().add(author);
 
         primaryStage.show();
 
         primaryStage.titleProperty().bind(author.textProperty());
 
         addListener();
+    }
+
+    private void addToRoot(GridPane root, Node Element) {
+        GridPane.setConstraints(Element, 0, root.getChildren().size());
+        root.getChildren().add(Element);
     }
 
     private void addListener() {
