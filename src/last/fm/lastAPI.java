@@ -15,7 +15,7 @@ public class lastAPI {
             String api_key = "f5e523cdf9f852a409985ca6d22c4f1d";
             //private String api_sig = "839f284b8672339a30048e6817acadfe";
             String baseURL = "http://ws.audioscrobbler.com/2.0/";
-            out = curl.curl.sendCurl(baseURL + "?method=artist.getInfo&artist=" + author + "&api_key=" + api_key + "&lang=de&format=json", "GET");
+            out = curl.curl.sendCurl(baseURL + "?method=artist.getInfo&artist=" + author + "&api_key=" + api_key + "&lang=de&autocorrec=1&format=json", "GET");
         } catch (IOException e) {
             e.printStackTrace();
         }
