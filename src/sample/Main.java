@@ -24,6 +24,7 @@ public class Main extends Application {
     private TextField author;
     private FileCommunicator apiSettings;
     private String tmpS="";
+    GridPane root;
 
     @Override
     public void start(Stage primaryStage) {
@@ -33,7 +34,12 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
-        GridPane root = new GridPane();
+        root = new GridPane();
+
+        Button stopAndPlay = new Button("||");
+        Button forward = new Button("<");
+        Button backward = new Button(">");
+
         primaryStage.setTitle("Last.fm API");
         primaryStage.setScene(new Scene(root, 300, 275));
 
@@ -51,8 +57,12 @@ public class Main extends Application {
             author = new TextField("U2");
         }
 
-        addToRoot(root, author);
-        addToRoot(root, moreInfo);
+        addToRoot(author);
+        addToRoot(moreInfo);
+        addToRoot(backward);
+        addToRoot(stopAndPlay);
+        addToRoot(forward);
+
 
         //GridPane.setConstraints(moreInfo, 0, 0);
         //GridPane.setConstraints(author, 0, 1);
@@ -60,9 +70,7 @@ public class Main extends Application {
         //root.getChildren().add(author);
 
         primaryStage.show();
-
         primaryStage.titleProperty().bind(author.textProperty());
-
         addListener();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -78,7 +86,7 @@ public class Main extends Application {
         }));
     }
 
-    private void addToRoot(GridPane root, Node Element) {
+    private void addToRoot(Node Element) {
         GridPane.setConstraints(Element, 0, root.getChildren().size());
         root.getChildren().add(Element);
     }
