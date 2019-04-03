@@ -2,6 +2,7 @@ package sample;
 
 import javafx.application.Application;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -36,6 +37,7 @@ public class Main extends Application {
         }
 
         root = new GridPane();
+        root.setAlignment(Pos.CENTER);
 
         Button stopAndPlay = new Button("||");
         Button forward = new Button("<");
@@ -59,11 +61,11 @@ public class Main extends Application {
             author = new TextField("U2");
         }
 
-        addToRoot(author,0,1);
+        addToRoot(author,0,0);
         addToRoot(moreInfo,0,1);
-        addToRoot(backward,1,1);
-        addToRoot(stopAndPlay,2,1);
-        addToRoot(forward,3,1);
+        addToRoot(backward,1,3);
+        addToRoot(stopAndPlay,2,3);
+        addToRoot(forward,3,3);
 
 
         //GridPane.setConstraints(moreInfo, 0, 0);
