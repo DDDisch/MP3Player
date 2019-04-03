@@ -18,10 +18,7 @@ public class authorPopUp {
     private static ArrayList<String> apiArr;
 
     public static void authorWindow(String api) {
-        System.out.println(api);
         createArr(api);
-
-        System.out.println(filterArray(4, "img"));
 
         Stage stage = new Stage();
         stage.initStyle(StageStyle.UNDECORATED);
