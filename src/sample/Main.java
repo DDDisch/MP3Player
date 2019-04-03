@@ -43,9 +43,7 @@ public class Main extends Application {
             ArrayList<String> tmpA= new ArrayList<>(Arrays.asList(tmp.split("(?<= )")));
             tmpA.remove(0);
 
-            for(int i = 0; i<tmpA.size(); i++) {
-                tmpS += tmpA.get(i);
-            }
+            for (String s : tmpA) tmpS += s;
 
             author = new TextField("" + tmpS);
         }
@@ -69,7 +67,11 @@ public class Main extends Application {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                apiSettings.writeLine("Author: " + author.getText());
+                if(!author.getText().equals("")) {
+                    apiSettings.writeLine("Author: " + author.getText());
+                } else {
+                    apiSettings.writeLine("None");
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
