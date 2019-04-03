@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.geometry.HPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -44,6 +45,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 300, 275));
 
         moreInfo = new Button("More Information");
+
         if(apiSettings.readFile().contains("Author:")) {
             String tmp = apiSettings.readFile();
             ArrayList<String> tmpA= new ArrayList<>(Arrays.asList(tmp.split("(?<= )")));
@@ -57,11 +59,11 @@ public class Main extends Application {
             author = new TextField("U2");
         }
 
-        addToRoot(author);
-        addToRoot(moreInfo);
-        addToRoot(backward);
-        addToRoot(stopAndPlay);
-        addToRoot(forward);
+        addToRoot(author,0,1);
+        addToRoot(moreInfo,0,1);
+        addToRoot(backward,1,1);
+        addToRoot(stopAndPlay,2,1);
+        addToRoot(forward,3,1);
 
 
         //GridPane.setConstraints(moreInfo, 0, 0);
@@ -86,8 +88,9 @@ public class Main extends Application {
         }));
     }
 
-    private void addToRoot(Node Element) {
-        GridPane.setConstraints(Element, 0, root.getChildren().size());
+    private void addToRoot(Node Element, int col, int row) {
+        GridPane.setConstraints(Element, col, row);
+        GridPane.setHalignment(Element, HPos.CENTER);
         root.getChildren().add(Element);
     }
 
