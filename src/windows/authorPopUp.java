@@ -27,13 +27,14 @@ public class authorPopUp {
         if(!filterArray(4,"img").isEmpty()) {
             iv.setImage(new Image(filterArray(4, "img")));
         }
+        GridPane.setConstraints(iv, 0,0);
+        root.getChildren().add(iv);
 
         stage.setScene(new Scene(root, 400, 400));
         stage.show();
         stage.setTitle(filterArray(0, "title"));
 
         addItem(root, new Label(filterArray(0, "title")));
-        addItem(root, iv);
 
         stage.addEventFilter(KeyEvent.KEY_PRESSED, e-> {
             if(e.getCode() == KeyCode.ESCAPE) {
@@ -43,8 +44,8 @@ public class authorPopUp {
     }
 
     private static void addItem(GridPane root, Node node) {
+        GridPane.setConstraints(node, 0,root.getChildren().size());
         root.getChildren().add(node);
-        GridPane.setConstraints(root.getChildren().get(root.getChildren().size()-1), 0,root.getChildren().size()-1);
     }
 
     private static void createArr(String api) {
