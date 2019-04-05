@@ -8,13 +8,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import last.fm.lastAPI;
 import FileCommunicator.*;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
@@ -27,21 +29,35 @@ public class Main extends Application {
     private FileCommunicator apiSettings;
     private String tmpS="";
     GridPane root;
+    Button stopAndPlay, forward, backward, load;
+    FileChooser fileChooser = new FileChooser();
+    Stage primaryStage = new Stage();
+    File file;
+    boolean play = false;
+
+    private String URL = "";
+    public AudioStream audioStream;
+
+    public Main() throws IOException {
+    }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage2) {
         try {
             apiSettings = new FileCommunicator(new File("./res/settings/api.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        primaryStage = primaryStage2;
+        fileChooser.setTitle("Open Resource File");
 
         root = new GridPane();
         root.setAlignment(Pos.CENTER);
 
-        Button stopAndPlay = new Button("||");
-        Button forward = new Button("<");
-        Button backward = new Button(">");
+        stopAndPlay = new Button("||");
+        forward = new Button(">");
+        backward = new Button("<");
+        load = new Button("Load");
 
         primaryStage.setTitle("Last.fm API");
         primaryStage.setScene(new Scene(root, 300, 275));
@@ -61,11 +77,15 @@ public class Main extends Application {
             author = new TextField("U2");
         }
 
-        addToRoot(author,0,0);
-        addToRoot(moreInfo,0,1);
-        addToRoot(backward,1,3);
-        addToRoot(stopAndPlay,2,3);
-        addToRoot(forward,3,3);
+        HBox control = new HBox();
+        control.getChildren().addAll(backward,stopAndPlay,forward);
+        control.setAlignment(Pos.CENTER);
+
+        addToRoot(author,0);
+        addToRoot(moreInfo,1);
+        addToRoot(control,3);
+        addToRoot(load,4);
+
 
 
         //GridPane.setConstraints(moreInfo, 0, 0);
@@ -90,8 +110,8 @@ public class Main extends Application {
         }));
     }
 
-    private void addToRoot(Node Element, int col, int row) {
-        GridPane.setConstraints(Element, col, row);
+    private void addToRoot(Node Element, int row) {
+        GridPane.setConstraints(Element, 0, row);
         GridPane.setHalignment(Element, HPos.CENTER);
         root.getChildren().add(Element);
     }
@@ -107,10 +127,62 @@ public class Main extends Application {
 
             windows.authorPopUp.authorWindow(tmp);
         });
+
+        load.setOnAction(e -> {
+            file = fileChooser.showOpenDialog(primaryStage);
+            if (file != null)
+            {
+                loadMP3(file.getAbsolutePath());
+                play = false;
+            }
+        });
+
+        stopAndPlay.setOnAction(e ->{
+            if (!play)
+            {
+                startPlayer();
+                play = true;
+            }
+            else
+            {
+                stopPlayer();
+                play = false;
+            }
+
+        });
+
     }
 
+
+    public void loadMP3(String soundURL) {
+        InputStream in = null;
+        try {
+            in = new FileInputStream(soundURL);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        audioStream = null;
+        try {
+            audioStream = new AudioStream(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startPlayer()
+    {
+        AudioPlayer.player.start(audioStream);
+    }
+
+    public void stopPlayer()
+    {
+        AudioPlayer.player.stop(audioStream);
+    }
 
     public static void main(String[] args) {
         launch(args);
     }
+
+
+
 }
