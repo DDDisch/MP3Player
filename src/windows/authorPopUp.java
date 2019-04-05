@@ -1,5 +1,6 @@
 package windows;
 
+import javafx.geometry.HPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -8,9 +9,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,16 +27,23 @@ public class authorPopUp {
         stage.initStyle(StageStyle.UNDECORATED);
         GridPane root = new GridPane();
         ImageView iv = new ImageView();
-        if(!filterArray(4,"img").isEmpty()) {
-            iv.setImage(new Image(filterArray(4, "img")));
-        }
+        Label artist = new Label(filterArray(0, "title"));
 
-        stage.setScene(new Scene(root, 400, 400));
+        stage.setScene(new Scene(root, 300, Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2));
         stage.show();
         stage.setTitle(filterArray(0, "title"));
+        stage.setAlwaysOnTop(true);
+        stage.setX(0);
+        stage.setY(0);
 
-        addItem(root, new Label(filterArray(0, "title")));
+        if(!filterArray(4,"img").isEmpty()) {
+            iv.setImage(new Image(filterArray(8, "img"), 300, 300, true, true));
+        }
+
+        artist.setFont(new Font("Helvetica", 40));
+
         addItem(root, iv);
+        addItem(root, artist);
 
         stage.addEventFilter(KeyEvent.KEY_PRESSED, e-> {
             if(e.getCode() == KeyCode.ESCAPE) {
@@ -43,8 +53,9 @@ public class authorPopUp {
     }
 
     private static void addItem(GridPane root, Node node) {
+        GridPane.setConstraints(node, 0,root.getChildren().size());
+        GridPane.setHalignment(node, HPos.CENTER);
         root.getChildren().add(node);
-        GridPane.setConstraints(root.getChildren().get(root.getChildren().size()-1), 0,root.getChildren().size()-1);
     }
 
     private static void createArr(String api) {
@@ -56,7 +67,7 @@ public class authorPopUp {
             apiArr.remove(1);
     }
 
-    //Call Filter Array with every Index except Null, because the spliting of the API return String does not split the first with the last items
+    //Call Filter Array with every Index except Null, because the splitting of the API return String does not split the first with the last items
     private static String filterArray(int index, String mode) {
         if(mode.equals("normal"))
             return new ArrayList<>(Arrays.asList(apiArr.get(index).split(":"))).get(1).replace("\"", "");

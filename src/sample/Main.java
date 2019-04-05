@@ -12,11 +12,12 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import last.fm.lastAPI;
-import FileCommunicator.*;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
 
 import java.io.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
@@ -28,6 +29,7 @@ public class Main extends Application {
     private TextField author;
     private FileCommunicator apiSettings;
     private String tmpS="";
+    private GridPane root;
     GridPane root;
     Button stopAndPlay, forward, backward, load;
     FileChooser fileChooser = new FileChooser();
@@ -60,7 +62,10 @@ public class Main extends Application {
         load = new Button("Load");
 
         primaryStage.setTitle("Last.fm API");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root, Toolkit.getDefaultToolkit().getScreenSize().getWidth(), Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2));
+        primaryStage.setX(0);
+        primaryStage.setY(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2);
+
 
         moreInfo = new Button("More Information");
 
@@ -154,35 +159,7 @@ public class Main extends Application {
     }
 
 
-    public void loadMP3(String soundURL) {
-        InputStream in = null;
-        try {
-            in = new FileInputStream(soundURL);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        audioStream = null;
-        try {
-            audioStream = new AudioStream(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void startPlayer()
-    {
-        AudioPlayer.player.start(audioStream);
-    }
-
-    public void stopPlayer()
-    {
-        AudioPlayer.player.stop(audioStream);
-    }
-
     public static void main(String[] args) {
         launch(args);
     }
-
-
-
 }
