@@ -12,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import last.fm.lastAPI;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,7 +45,10 @@ public class Main extends Application {
         Button backward = new Button(">");
 
         primaryStage.setTitle("Last.fm API");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root, Toolkit.getDefaultToolkit().getScreenSize().getWidth(), Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2));
+        primaryStage.setX(0);
+        primaryStage.setY(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2);
+
 
         moreInfo = new Button("More Information");
 

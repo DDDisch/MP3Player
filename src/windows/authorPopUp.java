@@ -13,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -28,13 +29,15 @@ public class authorPopUp {
         ImageView iv = new ImageView();
         Label artist = new Label(filterArray(0, "title"));
 
-        stage.setScene(new Scene(root, 300, 400));
+        stage.setScene(new Scene(root, 300, Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2));
         stage.show();
         stage.setTitle(filterArray(0, "title"));
         stage.setAlwaysOnTop(true);
+        stage.setX(0);
+        stage.setY(0);
 
         if(!filterArray(4,"img").isEmpty()) {
-            iv.setImage(new Image(filterArray(8, "img"), stage.getWidth(), stage.getWidth(), true, true));
+            iv.setImage(new Image(filterArray(8, "img"), 300, 300, true, true));
         }
 
         artist.setFont(new Font("Helvetica", 40));
