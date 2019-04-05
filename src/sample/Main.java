@@ -1,5 +1,6 @@
 package sample;
 
+import FileCommunicator.FileCommunicator;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -10,14 +11,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import last.fm.lastAPI;
-import FileCommunicator.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
 public class Main extends Application {
@@ -27,7 +26,7 @@ public class Main extends Application {
     private TextField author;
     private FileCommunicator apiSettings;
     private String tmpS="";
-    GridPane root;
+    private GridPane root;
 
     @Override
     public void start(Stage primaryStage) {

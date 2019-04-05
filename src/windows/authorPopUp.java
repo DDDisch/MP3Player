@@ -64,7 +64,7 @@ public class authorPopUp {
             apiArr.remove(1);
     }
 
-    //Call Filter Array with every Index except Null, because the spliting of the API return String does not split the first with the last items
+    //Call Filter Array with every Index except Null, because the splitting of the API return String does not split the first with the last items
     private static String filterArray(int index, String mode) {
         if(mode.equals("normal"))
             return new ArrayList<>(Arrays.asList(apiArr.get(index).split(":"))).get(1).replace("\"", "");
