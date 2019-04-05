@@ -34,7 +34,7 @@ public class authorPopUp {
         stage.setAlwaysOnTop(true);
 
         if(!filterArray(4,"img").isEmpty()) {
-            iv.setImage(new Image(filterArray(12, "img"), stage.getWidth(), stage.getWidth(), true, true));
+            iv.setImage(new Image(filterArray(8, "img"), stage.getWidth(), stage.getWidth(), true, true));
         }
 
         artist.setFont(new Font("Helvetica", 40));
