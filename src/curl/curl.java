@@ -10,6 +10,7 @@ import java.net.URL;
 public class curl {
     public static String sendCurl(String link, String method) throws IOException {
         //Build and Connect to given URL
+        link = link.replace(" ", "%20");
         HttpURLConnection con = (HttpURLConnection) new URL(link).openConnection();
         con.setRequestMethod(method);
         con.setDoOutput(true);
