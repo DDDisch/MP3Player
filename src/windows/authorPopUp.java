@@ -1,5 +1,6 @@
 package windows;
 
+import javafx.geometry.HPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -8,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -24,17 +26,21 @@ public class authorPopUp {
         stage.initStyle(StageStyle.UNDECORATED);
         GridPane root = new GridPane();
         ImageView iv = new ImageView();
-        if(!filterArray(4,"img").isEmpty()) {
-            iv.setImage(new Image(filterArray(4, "img")));
-        }
-        GridPane.setConstraints(iv, 0,0);
-        root.getChildren().add(iv);
+        Label artist = new Label(filterArray(0, "title"));
 
-        stage.setScene(new Scene(root, 400, 400));
+        stage.setScene(new Scene(root, 300, 400));
         stage.show();
         stage.setTitle(filterArray(0, "title"));
+        stage.setAlwaysOnTop(true);
 
-        addItem(root, new Label(filterArray(0, "title")));
+        if(!filterArray(4,"img").isEmpty()) {
+            iv.setImage(new Image(filterArray(12, "img"), stage.getWidth(), stage.getWidth(), true, true));
+        }
+
+        artist.setFont(new Font("Helvetica", 40));
+
+        addItem(root, iv);
+        addItem(root, artist);
 
         stage.addEventFilter(KeyEvent.KEY_PRESSED, e-> {
             if(e.getCode() == KeyCode.ESCAPE) {
@@ -45,6 +51,7 @@ public class authorPopUp {
 
     private static void addItem(GridPane root, Node node) {
         GridPane.setConstraints(node, 0,root.getChildren().size());
+        GridPane.setHalignment(node, HPos.CENTER);
         root.getChildren().add(node);
     }
 
