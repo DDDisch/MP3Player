@@ -2,6 +2,7 @@ package sample;
 
 import FileCommunicator.FileCommunicator;
 import javafx.application.Application;
+import javafx.collections.MapChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -32,6 +33,7 @@ public class Main extends Application {
     private TextField author;
     private FileCommunicator apiSettings;
     private String tmpS="";
+    private Media m;
     GridPane root;
     Button stopAndPlay, forward, backward, load;
     FileChooser fileChooser = new FileChooser();
@@ -162,7 +164,19 @@ public class Main extends Application {
 
 
     public void loadMP3(File sound) {
-        mediaPlayer = new MediaPlayer(new Media(sound.toURI().toString()));
+        m = new Media(sound.toURI().toString());
+        
+        m.getMetadata().addListener(new MapChangeListener<String, Object>() {
+
+            @Override
+            public void onChanged(Change<? extends String, ?> change) {
+                if(change.wasAdded()) {
+                    handleMeta(change.getKey(), change.getValueAdded());
+                }
+            }
+        });
+        
+        mediaPlayer = new MediaPlayer(m);
         mediaPlayer.setAutoPlay(false);
     }
 
@@ -176,6 +190,20 @@ public class Main extends Application {
     {
         if(mediaPlayer != null)
             mediaPlayer.pause();
+    }
+
+    public void handleMeta(String key, Object value) {
+        if (key.equals("album")) {
+            //album.setText(value.toString());
+        } else if (key.equals("artist")) {
+            author.setText(value.toString());
+        } if (key.equals("title")) {
+            //title.setText(value.toString());
+        } if (key.equals("year")) {
+            //year.setText(value.toString());
+        } if (key.equals("image")) {
+            //albumCover.setImage((Image)value);
+        }
     }
 
     public static void main(String[] args) {
