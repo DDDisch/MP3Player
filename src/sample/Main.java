@@ -16,12 +16,11 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import last.fm.lastAPI;
-import FileCommunicator.*;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
 
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
@@ -34,18 +33,14 @@ public class Main extends Application {
     private FileCommunicator apiSettings;
     private String tmpS="";
     private Media m;
-    GridPane root;
-    Button stopAndPlay, forward, backward, load;
-    FileChooser fileChooser = new FileChooser();
-    Stage primaryStage = new Stage();
-    File file;
-    boolean play = false;
+    private GridPane root;
+    private Button stopAndPlay, forward, backward, load;
+    private FileChooser fileChooser = new FileChooser();
+    private Stage primaryStage = new Stage();
+    private File file;
+    private boolean play = false;
 
-    private String URL = "";
     private MediaPlayer mediaPlayer;
-
-    public Main() throws IOException {
-    }
 
     @Override
     public void start(Stage primaryStage2) {
@@ -163,16 +158,12 @@ public class Main extends Application {
     }
 
 
-    public void loadMP3(File sound) {
+    private void loadMP3(File sound) {
         m = new Media(sound.toURI().toString());
         
-        m.getMetadata().addListener(new MapChangeListener<String, Object>() {
-
-            @Override
-            public void onChanged(Change<? extends String, ?> change) {
-                if(change.wasAdded()) {
-                    handleMeta(change.getKey(), change.getValueAdded());
-                }
+        m.getMetadata().addListener((MapChangeListener<String, Object>) change -> {
+            if(change.wasAdded()) {
+                handleMeta(change.getKey(), change.getValueAdded());
             }
         });
         
@@ -180,19 +171,19 @@ public class Main extends Application {
         mediaPlayer.setAutoPlay(false);
     }
 
-    public void startPlayer()
+    private void startPlayer()
     {
         if(mediaPlayer != null)
             mediaPlayer.play();
     }
 
-    public void stopPlayer()
+    private void stopPlayer()
     {
         if(mediaPlayer != null)
             mediaPlayer.pause();
     }
 
-    public void handleMeta(String key, Object value) {
+    private void handleMeta(String key, Object value) {
         if (key.equals("artist")) {
             author.setText(value.toString());
         } else if (key.equals("title")) {
@@ -203,7 +194,4 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
-
-
 }
