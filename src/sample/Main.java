@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import last.fm.lastAPI;
@@ -38,7 +40,7 @@ public class Main extends Application {
     boolean play = false;
 
     private String URL = "";
-    public AudioStream audioStream;
+    private MediaPlayer mediaPlayer;
 
     public Main() throws IOException {
     }
@@ -137,7 +139,7 @@ public class Main extends Application {
             file = fileChooser.showOpenDialog(primaryStage);
             if (file != null)
             {
-                loadMP3(file.getAbsolutePath());
+                loadMP3(file);
                 play = false;
             }
         });
@@ -159,29 +161,21 @@ public class Main extends Application {
     }
 
 
-    public void loadMP3(String soundURL) {
-        InputStream in = null;
-        try {
-            in = new FileInputStream(soundURL);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        audioStream = null;
-        try {
-            audioStream = new AudioStream(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void loadMP3(File sound) {
+        mediaPlayer = new MediaPlayer(new Media(sound.toURI().toString()));
+        mediaPlayer.setAutoPlay(false);
     }
 
     public void startPlayer()
     {
-        AudioPlayer.player.start(audioStream);
+        if(mediaPlayer != null)
+            mediaPlayer.play();
     }
 
     public void stopPlayer()
     {
-        AudioPlayer.player.stop(audioStream);
+        if(mediaPlayer != null)
+            mediaPlayer.pause();
     }
 
     public static void main(String[] args) {
