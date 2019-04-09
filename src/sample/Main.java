@@ -193,16 +193,10 @@ public class Main extends Application {
     }
 
     public void handleMeta(String key, Object value) {
-        if (key.equals("album")) {
-            //album.setText(value.toString());
-        } else if (key.equals("artist")) {
+        if (key.equals("artist")) {
             author.setText(value.toString());
-        } if (key.equals("title")) {
+        } else if (key.equals("title")) {
             //title.setText(value.toString());
-        } if (key.equals("year")) {
-            //year.setText(value.toString());
-        } if (key.equals("image")) {
-            //albumCover.setImage((Image)value);
         }
     }
 
