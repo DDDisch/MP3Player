@@ -1,5 +1,6 @@
 package sample;
 
+import FileCommunicator.FileCommunicator;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -16,6 +17,7 @@ import FileCommunicator.*;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +62,10 @@ public class Main extends Application {
         load = new Button("Load");
 
         primaryStage.setTitle("Last.fm API");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root, Toolkit.getDefaultToolkit().getScreenSize().getWidth(), Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2));
+        primaryStage.setX(0);
+        primaryStage.setY(0);
+
 
         moreInfo = new Button("More Information");
 
