@@ -2,6 +2,7 @@ package sample;
 
 import FileCommunicator.FileCommunicator;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.MapChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -9,12 +10,15 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import last.fm.lastAPI;
 
 import java.awt.*;
@@ -32,7 +36,6 @@ public class Main extends Application {
     private TextField author;
     private FileCommunicator apiSettings;
     private String tmpS="";
-    private Media m;
     private GridPane root;
     private Button stopAndPlay, forward, backward, load;
     private FileChooser fileChooser = new FileChooser();
@@ -55,7 +58,15 @@ public class Main extends Application {
         root = new GridPane();
         root.setAlignment(Pos.CENTER);
 
-        stopAndPlay = new Button("||");
+        primaryStage.initStyle(StageStyle.UNDECORATED);
+
+        primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            if(e.getCode() == KeyCode.ESCAPE) {
+                Platform.exit();
+            }
+        });
+
+        stopAndPlay = new Button("\u25B6");
         forward = new Button(">");
         backward = new Button("<");
         load = new Button("Load");
@@ -145,11 +156,13 @@ public class Main extends Application {
             if (!play)
             {
                 startPlayer();
+                stopAndPlay.setText("\u25A0");
                 play = true;
             }
             else
             {
                 stopPlayer();
+                stopAndPlay.setText("\u25B6");
                 play = false;
             }
 
@@ -159,7 +172,7 @@ public class Main extends Application {
 
 
     private void loadMP3(File sound) {
-        m = new Media(sound.toURI().toString());
+        Media m = new Media(sound.toURI().toString());
         
         m.getMetadata().addListener((MapChangeListener<String, Object>) change -> {
             if(change.wasAdded()) {
