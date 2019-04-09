@@ -101,13 +101,6 @@ public class Main extends Application {
         addToRoot(control,3);
         addToRoot(load,4);
 
-
-
-        //GridPane.setConstraints(moreInfo, 0, 0);
-        //GridPane.setConstraints(author, 0, 1);
-        //root.getChildren().add(moreInfo);
-        //root.getChildren().add(author);
-
         primaryStage.show();
         primaryStage.titleProperty().bind(author.textProperty());
         addListener();
