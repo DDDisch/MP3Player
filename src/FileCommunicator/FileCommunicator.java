@@ -32,7 +32,7 @@ public class FileCommunicator  extends FileReader {
         }
     }
 
-    public boolean writeLine(String s) throws IOException {
+    public boolean writeLine(String s, Boolean append) throws IOException {
         class MyFileWriter extends FileWriter {
             private BufferedWriter bufferedWriter;
 
@@ -72,7 +72,7 @@ public class FileCommunicator  extends FileReader {
             }
         }
 
-        MyFileWriter tmp = new MyFileWriter(this.file, false);
+        MyFileWriter tmp = new MyFileWriter(this.file, append);
         return tmp.writeLine(s);
     }
 }

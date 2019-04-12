@@ -33,7 +33,7 @@ public class Main extends Application {
 
     private lastAPI api = new lastAPI();
     private Button moreInfo;
-    private TextField author;
+    private TextField author, title;
     private FileCommunicator apiSettings;
     private String tmpS="";
     private GridPane root;
@@ -72,10 +72,9 @@ public class Main extends Application {
         load = new Button("Load");
 
         primaryStage.setTitle("Last.fm API");
-        primaryStage.setScene(new Scene(root, Toolkit.getDefaultToolkit().getScreenSize().getWidth(), Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2));
+        primaryStage.setScene(new Scene(root, 400, Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2));
         primaryStage.setX(0);
         primaryStage.setY(0);
-
 
         moreInfo = new Button("More Information");
 
@@ -83,20 +82,42 @@ public class Main extends Application {
             String tmp = apiSettings.readFile();
             ArrayList<String> tmpA= new ArrayList<>(Arrays.asList(tmp.split("(?<= )")));
             tmpA.remove(0);
+            if(tmpA.contains("Title:"))
+                tmpA.subList(tmpA.indexOf("Title: "), tmpA.size()).clear();
 
             for (String s : tmpA) tmpS += s;
 
             author = new TextField("" + tmpS);
         }
         else {
-            author = new TextField("U2");
+            author = new TextField("Author");
+        }
+
+        if(apiSettings.readFile().contains("Title:")) {
+            String tmp = apiSettings.readFile();
+            ArrayList<String> tmpA= new ArrayList<>(Arrays.asList(tmp.split("(?<= )")));
+            if(tmpA.contains("Author:"))
+                tmpA.subList(tmpA.indexOf("Author: "), tmpA.size()-1).clear();
+
+            tmpA.remove("Title: ");
+
+            for (String s : tmpA) tmpS += s;
+
+            title = new TextField("" + tmpS);
+        }
+        else {
+            title = new TextField("Title");
         }
 
         HBox control = new HBox();
         control.getChildren().addAll(backward,stopAndPlay,forward);
         control.setAlignment(Pos.CENTER);
 
-        addToRoot(author,0);
+        HBox top = new HBox();
+        top.getChildren().addAll(author, title);
+        top.setAlignment(Pos.CENTER);
+
+        addToRoot(top,0);
         addToRoot(moreInfo,1);
         addToRoot(control,3);
         addToRoot(load,4);
@@ -108,9 +129,15 @@ public class Main extends Application {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 if(!author.getText().equals("")) {
-                    apiSettings.writeLine("Author: " + author.getText());
+                    apiSettings.writeLine("Author: " + author.getText(), false);
                 } else {
-                    apiSettings.writeLine("None");
+                    apiSettings.writeLine("None", false);
+                }
+
+                if(!title.getText().equals("")) {
+                    apiSettings.writeLine("Title: " + title.getText(), true);
+                } else {
+                    apiSettings.writeLine("None", true);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -193,7 +220,7 @@ public class Main extends Application {
         if (key.equals("artist")) {
             author.setText(value.toString());
         } else if (key.equals("title")) {
-            //title.setText(value.toString());
+            title.setText(value.toString());
         }
     }
 
