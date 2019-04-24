@@ -1,6 +1,8 @@
 package FileCommunicator;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class FileCommunicator  extends FileReader {
     private BufferedReader bufferedReader;
@@ -9,6 +11,11 @@ public class FileCommunicator  extends FileReader {
 
     public FileCommunicator(File file) throws FileNotFoundException {
         super(file);
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.file = file;
     }
 
@@ -21,6 +28,11 @@ public class FileCommunicator  extends FileReader {
         }
 
         return line;
+    }
+
+    public String readLine(int line) throws IOException {
+        line -= 1;
+        return Files.readAllLines(Paths.get(file.getPath())).get(line);
     }
 
     public void exit() {

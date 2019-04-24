@@ -79,25 +79,32 @@ public class Main extends Application {
         moreInfo = new Button("More Information");
 
         if(apiSettings.readFile().contains("Author:")) {
-            String tmp = apiSettings.readFile();
+            String tmp = null;
+            try {
+                tmp = apiSettings.readLine(1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             ArrayList<String> tmpA= new ArrayList<>(Arrays.asList(tmp.split("(?<= )")));
             tmpA.remove(0);
-            if(tmpA.contains("Title:"))
-                tmpA.subList(tmpA.indexOf("Title: "), tmpA.size()).clear();
 
             for (String s : tmpA) tmpS += s;
 
             author = new TextField("" + tmpS);
-        }
-        else {
+        } else {
             author = new TextField("Author");
         }
 
         if(apiSettings.readFile().contains("Title:")) {
-            String tmp = apiSettings.readFile();
+            tmpS = "";
+            String tmp = null;
+            try {
+                tmp = apiSettings.readLine(2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             ArrayList<String> tmpA= new ArrayList<>(Arrays.asList(tmp.split("(?<= )")));
-            if(tmpA.contains("Author:"))
-                tmpA.subList(tmpA.indexOf("Author: "), tmpA.size()-1).clear();
 
             tmpA.remove("Title: ");
 
@@ -131,13 +138,13 @@ public class Main extends Application {
                 if(!author.getText().equals("")) {
                     apiSettings.writeLine("Author: " + author.getText(), false);
                 } else {
-                    apiSettings.writeLine("None", false);
+                    apiSettings.writeLine("Author: None", false);
                 }
 
                 if(!title.getText().equals("")) {
                     apiSettings.writeLine("Title: " + title.getText(), true);
                 } else {
-                    apiSettings.writeLine("None", true);
+                    apiSettings.writeLine("Title: None", true);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
