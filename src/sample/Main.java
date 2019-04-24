@@ -37,7 +37,7 @@ public class Main extends Application {
 
     private lastAPI api = new lastAPI();
     private Button moreInfo;
-    private Label author, title;
+    private Label author = new Label(""), title = new Label("");
     private FileCommunicator apiSettings;
     private String tmpS="";
     private GridPane root;
@@ -88,6 +88,7 @@ public class Main extends Application {
         moreInfo = new Button("\u24d8");
         moreInfo.setId("moreInfo");
 
+        addListener();
         if(apiSettings.readFile().contains("Author:")) {
             String tmp = null;
             try {
@@ -101,9 +102,9 @@ public class Main extends Application {
 
             for (String s : tmpA) tmpS += s;
 
-            author = new Label("" + tmpS);
+            author.setText(tmpS);
         } else {
-            author = new Label("Author");
+            author.setText("Author");
         }
 
         if(apiSettings.readFile().contains("Title:")) {
@@ -120,16 +121,11 @@ public class Main extends Application {
 
             for (String s : tmpA) tmpS += s;
 
-            title = new Label("" + tmpS);
+            title.setText(tmpS);
         }
         else {
-            title = new Label("Title");
+            title.setText("Title");
         }
-
-        String api = curl.curl.sendCurl(baseURL + "?method=artist.getInfo&artist=" + author.getText() + "&api_key=" + api_key + "&lang=de&autocorrec=1&format=json", "GET");
-        ArrayList<String> apiArr = last.fm.filter.filterArrray.createArr(api);
-        System.out.println(last.fm.filter.filterArrray.filter(8, "img", apiArr));
-        root.setBackground(new Background(new BackgroundImage(new Image(last.fm.filter.filterArrray.filter(8, "img", apiArr), root.getWidth()+85, root.getHeight(), true, true), BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
 
         HBox control = new HBox();
         control.getChildren().addAll(backward,stopAndPlay,forward);
@@ -151,8 +147,6 @@ public class Main extends Application {
 
         primaryStage.show();
         primaryStage.titleProperty().bind(author.textProperty());
-
-        addListener();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -220,7 +214,10 @@ public class Main extends Application {
             try {
                 String api = curl.curl.sendCurl(baseURL + "?method=artist.getInfo&artist=" + author.getText() + "&api_key=" + api_key + "&lang=de&autocorrec=1&format=json", "GET");
                 ArrayList<String> apiArr = last.fm.filter.filterArrray.createArr(api);
-                root.setBackground(new Background(new BackgroundImage(new Image(last.fm.filter.filterArrray.filter(8, "img", apiArr), primaryStage.getWidth(), primaryStage.getHeight(), true, true), BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                Image img = new Image(last.fm.filter.filterArrray.filter(8, "img", apiArr));
+                primaryStage.setHeight(img.getHeight());
+                primaryStage.setWidth(img.getWidth());
+                root.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
