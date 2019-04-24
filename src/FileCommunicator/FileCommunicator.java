@@ -11,11 +11,7 @@ public class FileCommunicator  extends FileReader {
 
     public FileCommunicator(File file) throws FileNotFoundException {
         super(file);
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         this.file = file;
     }
 

@@ -9,13 +9,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -33,7 +34,7 @@ public class Main extends Application {
 
     private lastAPI api = new lastAPI();
     private Button moreInfo;
-    private TextField author, title;
+    private Label author, title;
     private FileCommunicator apiSettings;
     private String tmpS="";
     private GridPane root;
@@ -46,7 +47,7 @@ public class Main extends Application {
     private MediaPlayer mediaPlayer;
 
     @Override
-    public void start(Stage primaryStage2) {
+    public void start(Stage primaryStage2) throws IOException {
         try {
             apiSettings = new FileCommunicator(new File("./res/settings/api.txt"));
         } catch (FileNotFoundException e) {
@@ -57,6 +58,8 @@ public class Main extends Application {
 
         root = new GridPane();
         root.setAlignment(Pos.CENTER);
+        root.setStyle("-fx-background-color: white;");
+        root.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
         primaryStage.initStyle(StageStyle.UNDECORATED);
 
@@ -76,7 +79,8 @@ public class Main extends Application {
         primaryStage.setX(0);
         primaryStage.setY(0);
 
-        moreInfo = new Button("More Information");
+        moreInfo = new Button("\u24d8");
+        moreInfo.setId("moreInfo");
 
         if(apiSettings.readFile().contains("Author:")) {
             String tmp = null;
@@ -91,9 +95,9 @@ public class Main extends Application {
 
             for (String s : tmpA) tmpS += s;
 
-            author = new TextField("" + tmpS);
+            author = new Label("" + tmpS);
         } else {
-            author = new TextField("Author");
+            author = new Label("Author");
         }
 
         if(apiSettings.readFile().contains("Title:")) {
@@ -110,24 +114,29 @@ public class Main extends Application {
 
             for (String s : tmpA) tmpS += s;
 
-            title = new TextField("" + tmpS);
+            title = new Label("" + tmpS);
         }
         else {
-            title = new TextField("Title");
+            title = new Label("Title");
         }
 
         HBox control = new HBox();
         control.getChildren().addAll(backward,stopAndPlay,forward);
         control.setAlignment(Pos.CENTER);
 
-        HBox top = new HBox();
-        top.getChildren().addAll(author, title);
-        top.setAlignment(Pos.CENTER);
+        load.setId("load");
 
-        addToRoot(top,0);
-        addToRoot(moreInfo,1);
-        addToRoot(control,3);
-        addToRoot(load,4);
+        HBox info = new HBox();
+        info.getChildren().addAll(author,moreInfo);
+        info.setAlignment(Pos.TOP_CENTER);
+
+        title.setId("title");
+        author.setId("author");
+
+        addToRoot(title,0);
+        addToRoot(info,1);
+        addToRoot(control,4);
+        addToRoot(load,5);
 
         primaryStage.show();
         primaryStage.titleProperty().bind(author.textProperty());
