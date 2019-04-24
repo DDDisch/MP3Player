@@ -15,29 +15,28 @@ import javafx.stage.StageStyle;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class authorPopUp {
     private static ArrayList<String> apiArr;
 
     public static void authorWindow(String api) {
-        createArr(api);
+        ArrayList<String> apiArr = last.fm.filter.filterArrray.createArr(api);
 
         Stage stage = new Stage();
         stage.initStyle(StageStyle.UNDECORATED);
         GridPane root = new GridPane();
         ImageView iv = new ImageView();
-        Label artist = new Label(filterArray(0, "title"));
+        Label artist = new Label(last.fm.filter.filterArrray.filter(0, "title", apiArr));
 
         stage.setScene(new Scene(root, 300, Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2));
         stage.show();
-        stage.setTitle(filterArray(0, "title"));
+        stage.setTitle(last.fm.filter.filterArrray.filter(0, "title", apiArr));
         stage.setAlwaysOnTop(true);
         stage.setX(0);
         stage.setY(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2);
 
-        if(!filterArray(4,"img").isEmpty()) {
-            iv.setImage(new Image(filterArray(8, "img"), 300, 300, true, true));
+        if(!last.fm.filter.filterArrray.filter(4,"img", apiArr).isEmpty()) {
+            iv.setImage(new Image(last.fm.filter.filterArrray.filter(8, "img", apiArr), 300, 300, true, true));
         }
 
         artist.setFont(new Font("Helvetica", 40));
@@ -56,25 +55,5 @@ public class authorPopUp {
         GridPane.setConstraints(node, 0,root.getChildren().size());
         GridPane.setHalignment(node, HPos.CENTER);
         root.getChildren().add(node);
-    }
-
-    private static void createArr(String api) {
-        apiArr = new ArrayList<>(Arrays.asList(api.split(",")));
-
-        //Delete MBID entry, because not every Artist has an MBID
-        //Reason: To prevent different indexes after the MBID
-        if(apiArr.get(1).contains("mbid"))
-            apiArr.remove(1);
-    }
-
-    //Call Filter Array with every Index except Null, because the splitting of the API return String does not split the first with the last items
-    private static String filterArray(int index, String mode) {
-        if(mode.equals("normal"))
-            return new ArrayList<>(Arrays.asList(apiArr.get(index).split(":"))).get(1).replace("\"", "");
-        if(mode.equals("img"))
-            return new ArrayList<>(Arrays.asList(apiArr.get(index).split(":",2))).get(1).replace("\"", "");
-        if(mode.equals("title"))
-            return new ArrayList<>(Arrays.asList(apiArr.get(0).split(":"))).get(2).replace("\"", "");
-        return "";
     }
 }
