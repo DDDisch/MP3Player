@@ -81,7 +81,7 @@ public class Main extends Application {
         load = new Button("Load");
 
         primaryStage.setTitle("Last.fm API");
-        primaryStage.setScene(new Scene(root, 300, Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2));
+        primaryStage.setScene(new Scene(root));
         primaryStage.setX(0);
         primaryStage.setY(0);
 
@@ -227,15 +227,14 @@ public class Main extends Application {
 
     private void loadMP3(File sound) {
         Media m = new Media(sound.toURI().toString());
-        
+        mediaPlayer = new MediaPlayer(m);
+        mediaPlayer.setAutoPlay(false);
+
         m.getMetadata().addListener((MapChangeListener<String, Object>) change -> {
             if(change.wasAdded()) {
                 handleMeta(change.getKey(), change.getValueAdded());
             }
         });
-        
-        mediaPlayer = new MediaPlayer(m);
-        mediaPlayer.setAutoPlay(false);
     }
 
     private void startPlayer()
