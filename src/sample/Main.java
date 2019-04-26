@@ -4,8 +4,8 @@ import FileCommunicator.FileCommunicator;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.MapChangeListener;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -13,20 +13,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import last.fm.lastAPI;
 import org.json.simple.JSONObject;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -46,15 +45,12 @@ public class Main extends Application {
     private FileChooser fileChooser = new FileChooser();
     private Stage primaryStage = new Stage();
     private File file;
-    private ImageView bgImg = new ImageView();
     private boolean play = false;
-    private String baseURL = "http://ws.audioscrobbler.com/2.0/";
-    private String api_key = "f5e523cdf9f852a409985ca6d22c4f1d";
 
     private MediaPlayer mediaPlayer;
 
     @Override
-    public void start(Stage primaryStage2) throws IOException {
+    public void start(Stage primaryStage2) {
 
         try {
             apiSettings = new FileCommunicator(new File("./res/settings/api.txt"));
@@ -98,6 +94,7 @@ public class Main extends Application {
                 e.printStackTrace();
             }
 
+            assert tmp != null;
             ArrayList<String> tmpA= new ArrayList<>(Arrays.asList(tmp.split("(?<= )")));
             tmpA.remove(0);
 
@@ -116,12 +113,10 @@ public class Main extends Application {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            assert tmp != null;
             ArrayList<String> tmpA= new ArrayList<>(Arrays.asList(tmp.split("(?<= )")));
-
             tmpA.remove("Title: ");
-
             for (String s : tmpA) tmpS += s;
-
             title.setText(tmpS);
         }
         else {
@@ -215,21 +210,25 @@ public class Main extends Application {
 
         });
 
-        author.textProperty().addListener((obsv, newv, old) -> {
+        title.textProperty().addListener((obsv, newv, old) -> {
             try {
-                JSONObject apiJ = api.authorAPI(author.getText());
-                Image img = new Image(last.fm.filter.filterArrray.filter("artist", "img", apiJ));
-                primaryStage.setHeight(img.getHeight());
-                primaryStage.setWidth(img.getWidth());
-                root.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                JSONObject apiJ = api.titleAPI(author.getText(), title.getText());
+                if(!last.fm.filter.filterArrray.filter("track", "img", apiJ).equals("True")) {
+                    Image img = new Image(last.fm.filter.filterArrray.filter("track", "img", apiJ));
+                    primaryStage.setHeight(img.getHeight());
+                    primaryStage.setWidth(img.getWidth());
+                    root.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                } else {
+                    apiJ = api.authorAPI(author.getText());
+                    Image img = new Image(last.fm.filter.filterArrray.filter("artist", "img", apiJ));
+                    primaryStage.setHeight(img.getHeight());
+                    primaryStage.setWidth(img.getWidth());
+                    root.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+                }
             } catch (InterruptedException | TimeoutException e) {
+                root.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
                 e.printStackTrace();
             }
-        });
-
-        primaryStage.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
-            primaryStage.setX(e.getX());
-            primaryStage.setY(e.getY());
         });
 
         final Delta dragDelta = new Delta();
