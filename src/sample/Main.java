@@ -4,26 +4,27 @@ import FileCommunicator.FileCommunicator;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.MapChangeListener;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Color;
-import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import last.fm.lastAPI;
+import org.json.simple.JSONObject;
 
 import java.awt.*;
 import java.io.File;
@@ -175,7 +176,7 @@ public class Main extends Application {
 
     private void addListener() {
         moreInfo.setOnAction(e -> {
-            String tmp = "";
+            JSONObject tmp = null;
             try {
                 tmp = api.authorAPI(author.getText());
             } catch (TimeoutException | InterruptedException e1) {
@@ -186,23 +187,27 @@ public class Main extends Application {
         });
 
         load.setOnAction(e -> {
+            root.setCursor(Cursor.WAIT);
+
             file = fileChooser.showOpenDialog(primaryStage);
-            if (file != null)
-            {
+
+            if(mediaPlayer != null)
+                mediaPlayer.dispose();
+
+            if (file != null) {
+                stopAndPlay.setText("\u25B6");
                 loadMP3(file);
                 play = false;
             }
+            root.setCursor(Cursor.DEFAULT);
         });
 
         stopAndPlay.setOnAction(e ->{
-            if (!play)
-            {
+            if (!play) {
                 startPlayer();
                 stopAndPlay.setText("\u25A0");
                 play = true;
-            }
-            else
-            {
+            } else {
                 stopPlayer();
                 stopAndPlay.setText("\u25B6");
                 play = false;
@@ -212,18 +217,31 @@ public class Main extends Application {
 
         author.textProperty().addListener((obsv, newv, old) -> {
             try {
-                String api = curl.curl.sendCurl(baseURL + "?method=artist.getInfo&artist=" + author.getText() + "&api_key=" + api_key + "&lang=de&autocorrec=1&format=json", "GET");
-                ArrayList<String> apiArr = last.fm.filter.filterArrray.createArr(api);
-                Image img = new Image(last.fm.filter.filterArrray.filter(8, "img", apiArr));
+                JSONObject apiJ = api.authorAPI(author.getText());
+                Image img = new Image(last.fm.filter.filterArrray.filter("artist", "img", apiJ));
                 primaryStage.setHeight(img.getHeight());
                 primaryStage.setWidth(img.getWidth());
                 root.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-            } catch (IOException e) {
+            } catch (InterruptedException | TimeoutException e) {
                 e.printStackTrace();
             }
         });
-    }
 
+        primaryStage.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
+            primaryStage.setX(e.getX());
+            primaryStage.setY(e.getY());
+        });
+
+        final Delta dragDelta = new Delta();
+        root.setOnMousePressed(mouseEvent -> {
+            dragDelta.x = primaryStage.getX() - mouseEvent.getScreenX();
+            dragDelta.y = primaryStage.getY() - mouseEvent.getScreenY();
+        });
+        root.setOnMouseDragged(mouseEvent -> {
+            primaryStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+            primaryStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+    }
 
     private void loadMP3(File sound) {
         Media m = new Media(sound.toURI().toString());
@@ -260,4 +278,6 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+    class Delta { double x, y; }
 }

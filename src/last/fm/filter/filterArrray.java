@@ -1,28 +1,24 @@
 package last.fm.filter;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class filterArrray {
-    public static ArrayList<String> createArr(String api) {
-        ArrayList<String> apiArr = new ArrayList<>(Arrays.asList(api.split(",")));
+    //Manipulate to JSONObject to fit the corresponding output
+    public static String filter(String filter, String mode, JSONObject api) {
+        JSONObject artist = (JSONObject) api.get(filter);
+        JSONArray img = (JSONArray) artist.get("image");
 
-        //Delete MBID entry, because not every Artist has an MBID
-        //Reason: To prevent different indexes after the MBID
-        if(apiArr.get(1).contains("mbid"))
-            apiArr.remove(1);
-
-        return apiArr;
-    }
-
-    //Call Filter Array with every Index except Null, because the splitting of the API return String does not split the first with the last items
-    public static String filter(int index, String mode, ArrayList<String> apiArr) {
-        if(mode.equals("normal"))
-            return new ArrayList<>(Arrays.asList(apiArr.get(index).split(":"))).get(1).replace("\"", "");
-        if(mode.equals("img"))
-            return new ArrayList<>(Arrays.asList(apiArr.get(index).split(":",2))).get(1).replace("\"", "");
-        if(mode.equals("title"))
-            return new ArrayList<>(Arrays.asList(apiArr.get(0).split(":"))).get(2).replace("\"", "");
+        if(mode.equals("img")) {
+            JSONObject bigImg = (JSONObject)img.get(img.size()-3);
+            return "" + bigImg.get("#text");
+        }
+        if(mode.equals("title")) {
+            return "" + artist.get("name");
+        }
         return "";
     }
 }

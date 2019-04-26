@@ -12,31 +12,29 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.json.simple.JSONObject;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 public class authorPopUp {
-    private static ArrayList<String> apiArr;
-
-    public static void authorWindow(String api) {
-        ArrayList<String> apiArr = last.fm.filter.filterArrray.createArr(api);
-
+    public static void authorWindow(JSONObject api) {
         Stage stage = new Stage();
         stage.initStyle(StageStyle.UNDECORATED);
         GridPane root = new GridPane();
         ImageView iv = new ImageView();
-        Label artist = new Label(last.fm.filter.filterArrray.filter(0, "title", apiArr));
+        Label artist = new Label(last.fm.filter.filterArrray.filter("artist", "title", api));
 
-        stage.setScene(new Scene(root, 300, Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2));
+        stage.setScene(new Scene(root));
         stage.show();
-        stage.setTitle(last.fm.filter.filterArrray.filter(0, "title", apiArr));
+        stage.setTitle(last.fm.filter.filterArrray.filter("artist", "title", api));
         stage.setAlwaysOnTop(true);
         stage.setX(0);
         stage.setY(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2);
 
-        if(!last.fm.filter.filterArrray.filter(4,"img", apiArr).isEmpty()) {
-            iv.setImage(new Image(last.fm.filter.filterArrray.filter(8, "img", apiArr), 300, 300, true, true));
+        if(!last.fm.filter.filterArrray.filter("artist","img", api).isEmpty()) {
+            iv.setImage(new Image(last.fm.filter.filterArrray.filter("artist", "img", api), 300, 300, true, true));
+            stage.setWidth(iv.getImage().getWidth());
         }
 
         artist.setFont(new Font("Helvetica", 40));
