@@ -23,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import last.fm.lastAPI;
 import org.json.simple.JSONObject;
 
@@ -246,6 +247,7 @@ public class Main extends Application {
         Media m = new Media(sound.toURI().toString());
         mediaPlayer = new MediaPlayer(m);
         mediaPlayer.setAutoPlay(false);
+        mediaPlayer.setStartTime(new Duration(0));
 
         m.getMetadata().addListener((MapChangeListener<String, Object>) change -> {
             if(change.wasAdded()) {
