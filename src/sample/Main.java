@@ -27,6 +27,7 @@ import javafx.util.Duration;
 import last.fm.lastAPI;
 import org.json.simple.JSONObject;
 
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -171,6 +172,10 @@ public class Main extends Application {
     }
 
     private void addListener() {
+        root.setOnMouseDragged(e->{
+            primaryStage.setX(e.getScreenX());
+            primaryStage.setY(e.getScreenY());
+        });
         moreInfo.setOnAction(e -> {
             JSONObject tmp = null;
             try {
@@ -218,6 +223,7 @@ public class Main extends Application {
                     Image img = new Image(last.fm.filter.filterArrray.filter("track", "img", apiJ));
                     primaryStage.setHeight(img.getHeight());
                     primaryStage.setWidth(img.getWidth());
+                    System.out.println(last.fm.filter.filterArrray.filter("track", "img", apiJ));
                     root.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                 } else {
                     apiJ = api.authorAPI(author.getText());

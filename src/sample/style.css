@@ -16,13 +16,13 @@
 }
 
 #author{
-    -fx-text-fill: grey;
+    -fx-text-fill: white;
     -fx-font-size: 1.5em; /* 12 */
     -fx-effect: dropshadow(three-pass-box, black, 5, 0, 0, 0);
 }
 
 #moreInfo{
-    -fx-text-fill: grey;
+    -fx-text-fill: white;
     -fx-font-size: 0.8em; /* 12 */
     -fx-effect: dropshadow(three-pass-box, black, 5, 0, 0, 0);
 }
