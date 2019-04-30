@@ -172,10 +172,6 @@ public class Main extends Application {
     }
 
     private void addListener() {
-        root.setOnMouseDragged(e->{
-            primaryStage.setX(e.getScreenX());
-            primaryStage.setY(e.getScreenY());
-        });
         moreInfo.setOnAction(e -> {
             JSONObject tmp = null;
             try {

@@ -47,8 +47,6 @@ public class lastAPI {
             }
         }
 
-        System.out.println(jout);
-
         return jout;
     }
 
@@ -77,8 +75,6 @@ public class lastAPI {
                 }
             }
         }
-
-        System.out.println(jout);
 
         return jout;
     }
