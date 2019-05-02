@@ -104,7 +104,7 @@ public class Main extends Application {
 
             author.setText(tmpS);
         } else {
-            author.setText("Author");
+            author.setText("Unknown");
         }
 
         if(apiSettings.readFile().contains("Title:")) {
@@ -122,7 +122,7 @@ public class Main extends Application {
             title.setText(tmpS);
         }
         else {
-            title.setText("Title");
+            title.setText("Unknown");
         }
 
         HBox control = new HBox();
