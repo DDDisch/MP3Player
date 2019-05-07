@@ -88,7 +88,7 @@ public class Main extends Application {
         load = new Button("Load");
 
         primaryStage.setTitle("Last.fm API");
-        primaryStage.setScene(new Scene(root));
+        primaryStage.setScene(new Scene(root, 300,300));
         primaryStage.setX(0);
         primaryStage.setY(0);
 
