@@ -140,6 +140,7 @@ public class Main extends Application {
             title.setText("Unknown");
         }
 
+
         HBox control = new HBox();
         control.getChildren().addAll(backward,stopAndPlay,forward);
         control.setAlignment(Pos.CENTER);
