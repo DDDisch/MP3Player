@@ -3,6 +3,9 @@ package sample;
 import FileCommunicator.FileCommunicator;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.MapChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -12,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -33,6 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Observable;
 import java.util.concurrent.TimeoutException;
 
 public class Main extends Application {
@@ -45,7 +50,10 @@ public class Main extends Application {
     private GridPane root;
     private Button stopAndPlay, forward, backward, load;
     private FileChooser fileChooser = new FileChooser();
+    private Slider volume = new Slider();
+    private Slider playProgress = new Slider();
     private Stage primaryStage = new Stage();
+    private Duration duration;
     private File file;
     private boolean play = false;
 
@@ -140,8 +148,11 @@ public class Main extends Application {
 
         addToRoot(title,0);
         addToRoot(info,1);
-        addToRoot(control,4);
+        addToRoot(playProgress, 2);
+        addToRoot(control,3);
+        addToRoot(volume, 4);
         addToRoot(load,5);
+        playProgress.setMinWidth(primaryStage.getWidth() - primaryStage.getWidth()/4);
 
         primaryStage.show();
         primaryStage.titleProperty().bind(author.textProperty());
@@ -212,7 +223,7 @@ public class Main extends Application {
 
         });
 
-        title.textProperty().addListener((obsv, newv, old) -> {
+        title.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 JSONObject apiJ = api.titleAPI(author.getText(), title.getText());
                 if(!last.fm.filter.filterArrray.filter("track", "img", apiJ).equals("True")) {
@@ -250,6 +261,31 @@ public class Main extends Application {
         mediaPlayer = new MediaPlayer(m);
         mediaPlayer.setAutoPlay(false);
         mediaPlayer.setStartTime(new Duration(0));
+
+        mediaPlayer.setOnReady(() -> {
+            duration = mediaPlayer.getMedia().getDuration();
+        });
+
+        volume.valueProperty().addListener(ov -> {
+            if (volume.isValueChanging()) {
+                mediaPlayer.setVolume(volume.getValue()/100.0);
+            }
+        });
+
+        playProgress.valueProperty().addListener(ov -> {
+            if (playProgress.isValueChanging()) {
+                // multiply duration by percentage calculated by slider position
+                mediaPlayer.seek(duration.multiply(playProgress.getValue() / 100.0));
+            }
+        });
+
+        mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
+            playProgress.setValue(mediaPlayer.getCurrentTime().divide(duration).toMillis() * 100);
+        });
+
+        mediaPlayer.volumeProperty().addListener((observable, oldValue, newValue) -> {
+            volume.setValue((int)Math.round(mediaPlayer.getVolume() * 100));
+        });
 
         m.getMetadata().addListener((MapChangeListener<String, Object>) change -> {
             if(change.wasAdded()) {
