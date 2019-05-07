@@ -1,6 +1,7 @@
 package sample;
 
 import FileCommunicator.FileCommunicator;
+import FileCommunicator.reloadSongs;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -30,34 +31,37 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import last.fm.lastAPI;
 import org.json.simple.JSONObject;
+import windows.List;
+import windows.ListItem;
 
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Observable;
+import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 
 public class Main extends Application {
 
     private lastAPI api = new lastAPI();
     private Button moreInfo;
-    private Label author = new Label(""), title = new Label("");
+    private static Label author = new Label(""), title = new Label("");
     private FileCommunicator apiSettings;
     private String tmpS="";
     private GridPane root;
-    private Button stopAndPlay, forward, backward, load;
+    private static Button stopAndPlay, forward, backward, load;
     private FileChooser fileChooser = new FileChooser();
-    private Slider volume = new Slider();
-    private Slider playProgress = new Slider();
+    private static Slider volume = new Slider();
+    private static Slider playProgress = new Slider();
     private Stage primaryStage = new Stage();
-    private Duration duration;
+    private static Duration duration;
     private File file;
     private boolean play = false;
+    private static List getSongs;
+    private static Media m;
 
-    private MediaPlayer mediaPlayer;
+    private static MediaPlayer mediaPlayer;
 
     @Override
     public void start(Stage primaryStage2) {
@@ -82,6 +86,8 @@ public class Main extends Application {
             }
         });
 
+        getSongs = new List();
+
         stopAndPlay = new Button("\u25B6");
         forward = new Button(">");
         backward = new Button("<");
@@ -90,8 +96,9 @@ public class Main extends Application {
         primaryStage.setTitle("Last.fm API");
         primaryStage.setScene(new Scene(root, 300,300));
         primaryStage.setX(0);
-        primaryStage.setY(0);
+        primaryStage.setY(40);
 
+        volume.setValue(100);
         moreInfo = new Button("\u24d8");
         moreInfo.setId("moreInfo");
 
@@ -157,6 +164,17 @@ public class Main extends Application {
         primaryStage.show();
         primaryStage.titleProperty().bind(author.textProperty());
 
+        try {
+            reloadSongs.reloadSongs();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Vector<File> songs = reloadSongs.getReloadedSongs();
+
+        for (File song : songs) {
+            getSongs.addListItem(song);
+        }
+
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 if(!author.getText().equals("")) {
@@ -174,6 +192,7 @@ public class Main extends Application {
                 e.printStackTrace();
             }
         }));
+
     }
 
     private void addToRoot(Node Element, int row) {
@@ -198,7 +217,15 @@ public class Main extends Application {
             root.setCursor(Cursor.WAIT);
 
             file = fileChooser.showOpenDialog(primaryStage);
+            getSongs.addListItem(file);
 
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/michael/Documents/3bHIT/SEW/Praxis/MP3Player/res/settings/loadedFiles.txt", true));
+                writer.append(file.toURI().getPath()+"\n");
+                writer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
             if(mediaPlayer != null)
                 mediaPlayer.dispose();
 
@@ -213,11 +240,9 @@ public class Main extends Application {
         stopAndPlay.setOnAction(e ->{
             if (!play) {
                 startPlayer();
-                stopAndPlay.setText("\u25A0");
                 play = true;
             } else {
                 stopPlayer();
-                stopAndPlay.setText("\u25B6");
                 play = false;
             }
 
@@ -228,15 +253,15 @@ public class Main extends Application {
                 JSONObject apiJ = api.titleAPI(author.getText(), title.getText());
                 if(!last.fm.filter.filterArrray.filter("track", "img", apiJ).equals("True")) {
                     Image img = new Image(last.fm.filter.filterArrray.filter("track", "img", apiJ));
-                    primaryStage.setHeight(img.getHeight());
-                    primaryStage.setWidth(img.getWidth());
+                    primaryStage.setHeight(300);
+                    primaryStage.setWidth(300);
                     System.out.println(last.fm.filter.filterArrray.filter("track", "img", apiJ));
                     root.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                 } else {
                     apiJ = api.authorAPI(author.getText());
                     Image img = new Image(last.fm.filter.filterArrray.filter("artist", "img", apiJ));
-                    primaryStage.setHeight(img.getHeight());
-                    primaryStage.setWidth(img.getWidth());
+                    primaryStage.setHeight(300);
+                    primaryStage.setWidth(300);
                     root.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                 }
             } catch (InterruptedException | TimeoutException e) {
@@ -256,8 +281,8 @@ public class Main extends Application {
         });
     }
 
-    private void loadMP3(File sound) {
-        Media m = new Media(sound.toURI().toString());
+    public static void loadMP3(File sound) {
+        m = new Media(sound.toURI().toString());
         mediaPlayer = new MediaPlayer(m);
         mediaPlayer.setAutoPlay(false);
         mediaPlayer.setStartTime(new Duration(0));
@@ -296,17 +321,19 @@ public class Main extends Application {
 
     private void startPlayer()
     {
+        stopAndPlay.setText("\u25A0");
         if(mediaPlayer != null)
             mediaPlayer.play();
     }
 
-    private void stopPlayer()
+    public static void stopPlayer()
     {
+        stopAndPlay.setText("\u25B6");
         if(mediaPlayer != null)
             mediaPlayer.pause();
     }
 
-    private void handleMeta(String key, Object value) {
+    private static void handleMeta(String key, Object value) {
         if (key.equals("artist")) {
             author.setText(value.toString());
         } else if (key.equals("title")) {
