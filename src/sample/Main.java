@@ -88,7 +88,7 @@ public class Main extends Application {
         load = new Button("Load");
 
         primaryStage.setTitle("Last.fm API");
-        primaryStage.setScene(new Scene(root, 300,300));
+        primaryStage.setScene(new Scene(root, 300 ,300));
         primaryStage.setX(0);
         primaryStage.setY(0);
 
@@ -228,15 +228,10 @@ public class Main extends Application {
                 JSONObject apiJ = api.titleAPI(author.getText(), title.getText());
                 if(!last.fm.filter.filterArrray.filter("track", "img", apiJ).equals("True")) {
                     Image img = new Image(last.fm.filter.filterArrray.filter("track", "img", apiJ));
-                    primaryStage.setHeight(img.getHeight());
-                    primaryStage.setWidth(img.getWidth());
-                    System.out.println(last.fm.filter.filterArrray.filter("track", "img", apiJ));
                     root.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                 } else {
                     apiJ = api.authorAPI(author.getText());
                     Image img = new Image(last.fm.filter.filterArrray.filter("artist", "img", apiJ));
-                    primaryStage.setHeight(img.getHeight());
-                    primaryStage.setWidth(img.getWidth());
                     root.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
                 }
             } catch (InterruptedException | TimeoutException e) {
