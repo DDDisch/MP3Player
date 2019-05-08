@@ -8,7 +8,7 @@ public class reloadSongs {
     static Vector<File> reloadedSongs = new Vector<File>();
 
     public static void reloadSongs() throws IOException {
-        File file = new File("/Users/michael/Documents/3bHIT/SEW/Praxis/MP3Player/res/settings/loadedFiles.txt");
+        File file = new File("./res/settings/loadedFiles.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         String st = null;
         while ((st = br.readLine()) != null) {

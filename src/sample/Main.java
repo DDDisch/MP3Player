@@ -4,9 +4,6 @@ import FileCommunicator.FileCommunicator;
 import FileCommunicator.reloadSongs;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.MapChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -20,7 +17,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -32,13 +28,10 @@ import javafx.util.Duration;
 import last.fm.lastAPI;
 import org.json.simple.JSONObject;
 import windows.List;
-import windows.ListItem;
-
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Observable;
 import java.util.Vector;
 import java.util.concurrent.TimeoutException;
 
@@ -221,7 +214,7 @@ public class Main extends Application {
             getSongs.addListItem(file);
 
             try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/michael/Documents/3bHIT/SEW/Praxis/MP3Player/res/settings/loadedFiles.txt", true));
+                BufferedWriter writer = new BufferedWriter(new FileWriter("./res/settings/loadedFiles.txt", true));
                 writer.append(file.toURI().getPath()+"\n");
                 writer.close();
             } catch (IOException ex) {
