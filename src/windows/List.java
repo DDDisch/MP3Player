@@ -1,7 +1,10 @@
 package windows;
 
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -37,6 +40,12 @@ public class List {
         scene.setOnMouseDragged(mouseEvent -> {
             secondStage.setX(mouseEvent.getScreenX() + dragDelta.x);
             secondStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+
+        secondStage.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            if(e.getCode() == KeyCode.ESCAPE) {
+                Platform.exit();
+            }
         });
 
     }

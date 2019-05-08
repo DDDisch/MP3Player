@@ -60,7 +60,15 @@ public class Main extends Application {
     public void start(Stage primaryStage2) {
 
         try {
-            apiSettings = new FileCommunicator(new File("./res/settings/api.txt"));
+            File file = new File("./res/settings/api.txt");
+            if(!file.exists()) {
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            apiSettings = new FileCommunicator(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -293,7 +301,6 @@ public class Main extends Application {
 
         playProgress.valueProperty().addListener(ov -> {
             if (playProgress.isValueChanging()) {
-                // multiply duration by percentage calculated by slider position
                 mediaPlayer.seek(duration.multiply(playProgress.getValue() / 100.0));
             }
         });
