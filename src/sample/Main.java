@@ -99,6 +99,7 @@ public class Main extends Application {
         primaryStage.setX(0);
         primaryStage.setY(40);
 
+
         volume.setValue(100);
         moreInfo = new Button("\u24d8");
         moreInfo.setId("moreInfo");
@@ -139,6 +140,22 @@ public class Main extends Application {
         }
         else {
             title.setText("Unknown");
+        }
+
+        if(apiSettings.readFile().contains("Last:")) {
+            tmpS = "";
+            String tmp = null;
+            try {
+                tmp = apiSettings.readLine(3);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            assert tmp != null;
+            ArrayList<String> tmpA= new ArrayList<>(Arrays.asList(tmp.split("(?<= )")));
+            tmpA.remove("Last: ");
+            for (String s : tmpA) tmpS += s;
+            System.out.println(tmpS);
+            Main.loadMP3(new File(tmpS));
         }
 
 
@@ -190,6 +207,8 @@ public class Main extends Application {
                 } else {
                     apiSettings.writeLine("Title: None", true);
                 }
+
+                apiSettings.writeLine("Last: " + m.getSource().replace("file:", "").replace("%20", " "), true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
